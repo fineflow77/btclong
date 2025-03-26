@@ -1,12 +1,13 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { ChevronDown, ChevronUp, Settings, HelpCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
 import { formatYen, formatBTC } from '../../utils/formatters';
 import { DEFAULTS, CURRENT_YEAR, PriceModel } from '../../utils/constants';
 import { useInvestmentSimulation, SimulationInputs } from '../../hooks/useInvestmentSimulation';
 import LoadingSpinner from '../ui/LoadingSpinner';
 
-const typography = { /* typography definitions from Home.tsx */
+// Typography and color definitions (unchanged)
+const typography = {
     h1: 'text-2xl sm:text-3xl font-semibold tracking-tight',
     h2: 'text-xl sm:text-2xl font-medium',
     h3: 'text-lg sm:text-xl font-medium',
@@ -15,7 +16,7 @@ const typography = { /* typography definitions from Home.tsx */
     tiny: 'text-xs sm:text-sm font-normal',
 };
 
-const colors = { /* colors definitions from Home.tsx with adjustments */
+const colors = {
     primary: 'bg-[#3B82F6] hover:bg-[#2b6cb0] text-white',
     secondary: 'bg-gray-700 hover:bg-gray-600 text-white',
     accent: 'bg-amber-500 hover:bg-amber-600 text-white',
@@ -28,7 +29,8 @@ const colors = { /* colors definitions from Home.tsx with adjustments */
     success: 'text-[#10B981]',
 };
 
-const TooltipIcon: React.FC<{ content: React.ReactNode }> = ({ content }) => ( /* TooltipIcon component */
+// TooltipIcon component (unchanged)
+const TooltipIcon: React.FC<{ content: React.ReactNode }> = ({ content }) => (
     <div className="group relative inline-block ml-2">
         <HelpCircle className="h-4 w-4 text-gray-400 hover:text-gray-300 cursor-help transition-colors duration-200" />
         <div className="invisible group-hover:visible absolute z-10 w-64 p-2 mt-2 text-sm text-gray-300 bg-gray-800 rounded-lg shadow-lg -translate-x-1/2 left-1/2">
@@ -37,7 +39,8 @@ const TooltipIcon: React.FC<{ content: React.ReactNode }> = ({ content }) => ( /
     </div>
 );
 
-const InputField: React.FC<{ /* InputField component */
+// InputField component (unchanged)
+const InputField: React.FC<{
     label: string;
     tooltip?: React.ReactNode;
     error?: string;
@@ -53,7 +56,8 @@ const InputField: React.FC<{ /* InputField component */
     </div>
 );
 
-const TOOLTIPS = { /* TOOLTIPS object */
+// TOOLTIPS object (unchanged)
+const TOOLTIPS = {
     initialInvestmentType: "初期投資方法を選択してください。すでに保有しているBTCを指定するか、日本円で投資するかを選べます。",
     initialInvestment: "初期投資額（円）を入力してください。",
     initialBtcHolding: "すでに保有しているビットコインの量（BTC）を入力してください。",
@@ -69,8 +73,8 @@ const TOOLTIPS = { /* TOOLTIPS object */
     inflationRate: "年間の物価上昇率を設定します。",
 };
 
-
-const SimulationResultsTable: React.FC<{ results: any[] }> = ({ results }) => ( /* SimulationResultsTable component */
+// SimulationResultsTable component (unchanged)
+const SimulationResultsTable: React.FC<{ results: any[] }> = ({ results }) => (
     <div className={`hidden md:block ${colors.cardBg} p-6 rounded-xl shadow-md ${colors.cardBorder}`}>
         <div className="flex justify-between mb-4">
             <h3 className={`${typography.h3} ${colors.textPrimary}`}>シミュレーション結果</h3>
@@ -104,12 +108,12 @@ const SimulationResultsTable: React.FC<{ results: any[] }> = ({ results }) => ( 
     </div>
 );
 
-
-const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main component */
+const InvestmentSimulator: React.FC = () => {
+    // State declarations with default values for better UX
     const [initialInvestmentType, setInitialInvestmentType] = useState<'btc' | 'jpy'>("btc");
-    const [initialInvestment, setInitialInvestment] = useState("");
-    const [initialBtcHolding, setInitialBtcHolding] = useState("");
-    const [monthlyInvestment, setMonthlyInvestment] = useState("");
+    const [initialInvestment, setInitialInvestment] = useState("0"); // Default to 0
+    const [initialBtcHolding, setInitialBtcHolding] = useState("0"); // Default to 0
+    const [monthlyInvestment, setMonthlyInvestment] = useState("10000"); // Default to 10,000 JPY
     const [years, setYears] = useState("10");
     const [priceModel, setPriceModel] = useState<PriceModel>(PriceModel.STANDARD);
     const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
@@ -120,22 +124,23 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
 
     const { results, errors, simulate } = useInvestmentSimulation();
 
-    const runSimulation = useCallback(() => { /* runSimulation function */
+    // Run simulation with input validation
+    const runSimulation = useCallback(() => {
         setIsCalculating(true);
         const inputs: SimulationInputs = {
             initialInvestmentType,
-            initialInvestment,
-            initialBtcHolding,
-            monthlyInvestment,
-            years,
+            initialInvestment: initialInvestment || "0", // Fallback to 0 if empty
+            initialBtcHolding: initialBtcHolding || "0", // Fallback to 0 if empty
+            monthlyInvestment: monthlyInvestment || "0", // Fallback to 0 if empty
+            years: years || "1", // Fallback to 1 year if empty
             priceModel,
-            exchangeRate,
-            inflationRate
+            exchangeRate: exchangeRate || DEFAULTS.EXCHANGE_RATE.toString(), // Fallback to default
+            inflationRate: inflationRate || DEFAULTS.INFLATION_RATE.toString(), // Fallback to default
         };
         setTimeout(() => {
             simulate(inputs);
             setIsCalculating(false);
-        }, 500);
+        }, 500); // Simulated delay for UX
     }, [
         initialInvestmentType,
         initialInvestment,
@@ -145,11 +150,11 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
         priceModel,
         exchangeRate,
         inflationRate,
-        simulate
+        simulate,
     ]);
 
-
-    const chartData = useMemo(() => { /* chartData memoization */
+    // Memoized chart data
+    const chartData = useMemo(() => {
         return results.map(result => ({
             year: result.year,
             btcHeld: result.btcHeld,
@@ -158,12 +163,12 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
         }));
     }, [results]);
 
-    const toggleGuide = useCallback(() => { /* toggleGuide function */
-        setShowGuide(!showGuide);
-    }, [showGuide]);
+    // Toggle guide visibility
+    const toggleGuide = useCallback(() => {
+        setShowGuide(prev => !prev);
+    }, []);
 
-
-    return ( /* InvestmentSimulator component JSX */
+    return (
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-900 min-h-screen text-gray-100 space-y-8">
             <div className={`${colors.cardBg} p-6 rounded-xl shadow-md ${colors.cardBorder}`}>
                 <h1 className={`${typography.h1} ${colors.textPrimary} mb-6 flex items-center justify-center`}>
@@ -193,7 +198,6 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
                         </ol>
                     </div>
                 )}
-
 
                 <section className="mb-6 p-6 rounded-xl shadow-md border border-gray-700">
                     <h2 className={`${typography.h2} ${colors.textPrimary} mb-4`}>初期投資設定</h2>
@@ -231,6 +235,7 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
                                 onChange={(e) => setInitialInvestment(e.target.value)}
                                 className="w-full bg-gray-700 p-2 rounded-md text-gray-100 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all duration-200"
                                 step="1000"
+                                min="0"
                                 placeholder="例: 100000"
                                 aria-label="初期投資額（円）"
                             />
@@ -243,6 +248,7 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
                                 onChange={(e) => setInitialBtcHolding(e.target.value)}
                                 className="w-full bg-gray-700 p-2 rounded-md text-gray-100 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all duration-200"
                                 step="0.00000001"
+                                min="0"
                                 placeholder="例: 0.1"
                                 aria-label="初期保有BTC"
                             />
@@ -261,6 +267,7 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
                                     onChange={(e) => setMonthlyInvestment(e.target.value)}
                                     className="w-full bg-gray-700 p-2 rounded-md text-gray-100 pr-12 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all duration-200"
                                     step="1000"
+                                    min="0"
                                     placeholder="例: 10000"
                                 />
                                 <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">円</span>
@@ -274,12 +281,13 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
                                 onChange={(e) => setYears(e.target.value)}
                                 className="w-full bg-gray-700 p-2 rounded-md text-gray-100 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all duration-200"
                                 step="1"
+                                min="1"
+                                max="50"
                                 placeholder="例: 10"
                             />
                         </InputField>
                     </div>
                 </section>
-
 
                 <section className="mb-6 p-6 rounded-xl shadow-md border border-gray-700">
                     <h2 className={`${typography.h2} ${colors.textPrimary} mb-4 flex items-center`}>詳細設定 <span className={`${typography.body} ${colors.textMuted}`}>(オプション)</span>
@@ -315,6 +323,7 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
                                         onChange={(e) => setExchangeRate(e.target.value)}
                                         className="w-full bg-gray-600 p-2 rounded-md text-gray-100 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all duration-200"
                                         step="0.1"
+                                        min="1"
                                         placeholder="例: 150"
                                     />
                                 </InputField>
@@ -325,6 +334,7 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
                                         onChange={(e) => setInflationRate(e.target.value)}
                                         className="w-full bg-gray-600 p-2 rounded-md text-gray-100 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all duration-200"
                                         step="0.1"
+                                        min="0"
                                         placeholder="例: 0"
                                     />
                                 </InputField>
@@ -332,7 +342,6 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
                         </div>
                     )}
                 </section>
-
 
                 <div className="mt-6">
                     <button
@@ -423,7 +432,6 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
                             </ResponsiveContainer>
                         </div>
 
-
                         <div className={`block md:hidden ${colors.cardBg} p-4 rounded-xl shadow-md space-y-3`}>
                             <h3 className={`${typography.h3} ${colors.textPrimary} mb-2`}>ハイライト</h3>
                             <div className="bg-gray-700 p-3 rounded-md">
@@ -466,10 +474,7 @@ const InvestmentSimulator: React.FC = () => { /* InvestmentSimulator main compon
                             </div>
                         </div>
 
-
-                        <SimulationResultsTable
-                            results={results}
-                        />
+                        <SimulationResultsTable results={results} />
                     </div>
                 )}
             </div>
