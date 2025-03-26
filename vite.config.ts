@@ -42,4 +42,6 @@ export default defineConfig({
       },
     },
   },
+  envPrefix: 'VITE_', // 環境変数のプレフィックスを指定
+  // define セクションを削除（Viteでは import.meta.env を使用するため不要）
 });
