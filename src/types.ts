@@ -1,4 +1,3 @@
-// src/types.ts
 export interface PriceData {
     usd: number;
     jpy: number;
@@ -53,22 +52,23 @@ export interface DataContainerProps {
 
 export interface PowerLawChartProps {
     exchangeRate: number;
-    rSquared: number | null;
+    rSquared: number | null; // 修正: nullを許容
     chartData: PowerLawDataPoint[];
-    currentPrice: number | undefined;
+    currentPrice?: number; // オプションに変更
     height?: number;
     xAxisScale?: 'linear' | 'log';
     yAxisScale?: 'linear' | 'log';
     showRSquared?: boolean;
     chartTitle?: string;
-    isLogScale?: boolean; // 追加
+    isLogScale?: boolean;
 }
 
 export interface PowerLawChartWrapperProps {
-    rSquared: number;
+    rSquared: number | null; // 修正: nullを許容
     chartData: PowerLawDataPoint[];
     exchangeRate: number;
-    currentPrice: number | undefined;
     height: number;
     isLogScale: boolean;
+    xAxisScale?: 'linear' | 'log';
+    yAxisScale?: 'linear' | 'log';
 }

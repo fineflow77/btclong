@@ -1,11 +1,8 @@
-// src/pages/PowerLawExplanation.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Info, TrendingUp, AlertTriangle } from 'lucide-react';
-
-interface PowerLawExplanationProps {
-    chartComponent: React.ReactNode;
-}
+import PowerLawChartWrapper from '../components/charts/PowerLawChartWrapper';
+import { useBitcoinData } from '../hooks/useBitcoinData';
 
 const typography: Record<string, string> = {
     h1: 'text-2xl sm:text-3xl font-semibold tracking-tight',
@@ -25,16 +22,18 @@ const colors: Record<string, string> = {
     textMuted: 'text-gray-400',
 };
 
-const PowerLawExplanation: React.FC<PowerLawExplanationProps> = ({ chartComponent }) => {
+const PowerLawExplanation: React.FC = () => {
+    const { loading, error, powerLawData, exchangeRate, rSquared } = useBitcoinData();
+
     return (
         <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a202c] to-[#2d3748] text-gray-100">
             <div className="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <header className="mb-12 text-center">
                     <h1 className={`${typography.h1} text-[#3B82F6] mb-4`}>
-                        パワーロー（べき乗則）とは？ ビットコインの長期成長を予測する鍵
+                        パワーローとは？
                     </h1>
                     <p className={`${typography.body} ${colors.textSecondary}`}>
-                        ビットコインの価格が長期的にどうなるか、シンプルな自然の法則で予測する方法をわかりやすく解説します。
+                        ビットコインの価格が長期的にどう動くのか、自然の法則から予測する手法を解説します。
                     </p>
                     <Link
                         to="/"
@@ -47,71 +46,35 @@ const PowerLawExplanation: React.FC<PowerLawExplanationProps> = ({ chartComponen
                 <section id="what-is-power-law" className={`${colors.cardBg} rounded-xl p-6 mb-8 shadow-lg`}>
                     <h2 className={`${typography.h2} text-[#3B82F6] mb-4 flex items-center`}>
                         <Info className="h-5 w-5 mr-2" />
-                        パワーローって何？ 自然界のシンプルな成長ルール
+                        成長の法則
                     </h2>
                     <div className={`${typography.body} ${colors.textSecondary} space-y-4`}>
                         <p>
-                            パワーロー（べき乗則）とは、自然界や社会で見られる「成長のルール」の一種です。簡単に言うと、「あるものが時間や規模の“べき乗”（たとえば2乗や3乗）に比例して大きくなる」という法則です。
+                            パワーロー（べき乗則）は、自然や社会で見られる成長の法則です。ある値が時間や規模の「べき乗」に比例して増えることを指します。
                         </p>
                         <p>
-                            たとえば、木の成長を考えてみましょう。木の高さが毎年2倍になるのではなく、年数が経つにつれて「年数の3乗」に比例して成長するとします。1年目で1メートル、2年目で8メートル（2の3乗）、3年目で27メートル（3の3乗）といった具合です。このような成長パターンがパワーローです。
+                            たとえば、都市の人口分布を考えてみてください。大都市は少なく、小さな町は多い。このようなパターンがパワーローです。地震の規模やインターネット上の人気も同様の傾向を示します。
                         </p>
                         <p>
-                            パワーローはいろんなところで活躍しています。たとえば：
+                            ビットコインの価格にもこの法則が当てはまり、長期的な成長を理解する手がかりになります。
                         </p>
-                        <ul className="list-disc list-inside space-y-2 pl-4">
-                            <li>地震の規模と頻度：大きな地震は少なく、小さな地震は多い。</li>
-                            <li>都市の人口：大都市は少なく、小さな町は多い。</li>
-                            <li>ネットの人気：有名なYouTuberは少なく、フォロワーの少ない人は多い。</li>
-                        </ul>
-                        <p className="italic text-gray-400">
-                            ポイント：パワーローは、物事が「急激に大きくなるけど、だんだん落ち着く」パターンを示します。ビットコインの価格も、このルールに従っていると考えられているんです。
-                        </p>
-                    </div>
-                    <div className="mt-4 text-right">
-                        <Link
-                            to="/bitcoin-basics"
-                            className="text-[#3B82F6] hover:text-[#2b6cb0] text-sm font-medium inline-flex items-center group"
-                        >
-                            ビットコイン投資の基礎を学ぶ{' '}
-                            <span className="ml-1 transition-transform duration-200 group-hover:translate-x-1">
-                                →
-                            </span>
-                        </Link>
                     </div>
                 </section>
 
                 <section id="bitcoin-power-law" className={`${colors.cardBg} rounded-xl p-6 mb-8 shadow-lg`}>
                     <h2 className={`${typography.h2} text-[#3B82F6] mb-4 flex items-center`}>
                         <TrendingUp className="h-5 w-5 mr-2" />
-                        ビットコインとパワーロー：価格が急成長する理由
+                        ビットコインとパワーロー
                     </h2>
                     <div className={`${typography.body} ${colors.textSecondary} space-y-4`}>
                         <p>
-                            ビットコインの価格は、2009年の誕生以来、驚くほど急成長してきました。たとえば、2010年には1ビットコインが0.05ドル（約5円）だったのが、2025年現在では数万ドルにまで上昇しています。この急成長の裏には、パワーローが関係していると研究者たちが考えています。
+                            ビットコインは2009年の誕生以来、驚異的な成長を遂げています。2010年には1BTCが0.05ドル程度だったものが、2025年現在では数万ドルに達しました。
                         </p>
                         <p>
-                            物理学者のGiovanni Santostasi（ジョバンニ・サントスタシ）さんは、ビットコインの価格が「時間の6乗」に比例して成長していると発見しました。ちょっと難しい話ですが、簡単に言うと、時間が経つにつれて価格がどんどん大きくなるけど、そのスピードは少しずつ落ち着いていく、ということです。
+                            物理学者のGiovanni Santostasiは、ビットコインの価格が「時間の6乗」に比例して成長すると指摘しています。これは、利用者が増えるほど価値が上がり（メトカーフの法則）、マイニングの難易度調整や安全性がさらなる利用者を引き込む循環によるものです。
                         </p>
                         <p>
-                            なぜこんな成長が起こるのか？ Santostasiさんによると、3つの理由があります：
-                        </p>
-                        <ul className="list-disc list-inside space-y-2 pl-4">
-                            <li>
-                                <span className="font-medium text-blue-300">みんなが使い始めると価値が上がる</span>：ビットコインを使う人が増えると、価値が「使う人の数の2乗」に比例して上がります。これは「メトカーフの法則」と呼ばれるもので、たとえばLINEやInstagramが人気になるほど便利になるのと同じ原理です。
-                            </li>
-                            <li>
-                                <span className="font-medium text-blue-300">マイニングが安定させる</span>：ビットコインは「マイニング」という作業で作られますが、難易度が自動で調整される仕組み（難易度調整）があるので、価格が急上昇しても供給が安定します。
-                            </li>
-                            <li>
-                                <span className="font-medium text-blue-300">安全だから人が集まる</span>：ビットコインのシステムが安全だとわかると、もっと多くの人が使い始めます。安全性の高さが新しい人を引き込むんです。
-                            </li>
-                        </ul>
-                        <p>
-                            この3つがぐるぐると回りながら、ビットコインの価格をパワーローに沿って成長させている、というのがSantostasiさんの理論です。
-                        </p>
-                        <p className="italic text-gray-400">
-                            ポイント：ビットコインは、まるで「デジタルな都市」のように成長しています。人が増えるほど価値が上がり、価値が上がるほど人が集まる、という好循環がパワーローを作り出しているんです。
+                            この理論では、ビットコインは単なる金融資産ではなく、ネットワーク効果によって成長する「デジタル都市」のような存在とされています。
                         </p>
                     </div>
                 </section>
@@ -119,72 +82,100 @@ const PowerLawExplanation: React.FC<PowerLawExplanationProps> = ({ chartComponen
                 <section id="power-law-chart" className={`${colors.cardBg} rounded-xl p-6 mb-8 shadow-lg`}>
                     <h2 className={`${typography.h2} text-[#3B82F6] mb-4 flex items-center`}>
                         <TrendingUp className="h-5 w-5 mr-2" />
-                        パワーローチャートを見てみよう：ビットコインの成長を視覚化
+                        パワーローチャートの種類
                     </h2>
                     <div className={`${typography.body} ${colors.textSecondary} space-y-4`}>
                         <p>
-                            では、実際にビットコインの価格がパワーローに従っているか、チャートで見てみましょう。以下のチャートは、2011年から現在までのビットコイン価格を「対数-対数スケール」で表したものです。
+                            ビットコインの価格成長を視覚化するには、パワーローチャートが役立ちます。ここでは2つのタイプを紹介します。
                         </p>
+                        <div>
+                            <h3 className={`${typography.subtitle} ${colors.textPrimary} mb-2`}>
+                                対数スケールチャート
+                            </h3>
+                            <p>
+                                対数スケールチャートは、Y軸（価格）を対数で表し、X軸（時間）は通常の線形スケールで表示します。価格が急激に上昇するビットコインのようなデータを扱う際、対数スケールを使うと、過去の小さな値動きと現在の大きな値動きを同じグラフ上で見やすくできます。
+                            </p>
+                            <p>
+                                たとえば、0.1ドルから10万ドルへの上昇が直線的なグラフでは見づらいですが、対数スケールでは自然な曲線として捉えられます。以下は対数スケールでの表示例です。
+                            </p>
+                            {loading ? (
+                                <p>読み込み中...</p>
+                            ) : error ? (
+                                <p>データの取得に失敗しました。</p>
+                            ) : (
+                                <PowerLawChartWrapper
+                                    chartData={powerLawData}
+                                    exchangeRate={exchangeRate}
+                                    rSquared={rSquared}
+                                    height={300}
+                                    isLogScale={false} // X軸: 線形, Y軸: 対数
+                                    xAxisScale="linear"
+                                    yAxisScale="log"
+                                />
+                            )}
+                        </div>
+                        <div>
+                            <h3 className={`${typography.subtitle} ${colors.textPrimary} mb-2`}>
+                                対数-対数スケールチャート
+                            </h3>
+                            <p>
+                                対数-対数スケールチャートは、X軸（時間）とY軸（価格）の両方を対数で表します。この方法では、パワーローの成長が直線として現れるのが特徴です。ビットコインの価格が時間のべき乗に比例するという理論を視覚的に確認するのに適しています。
+                            </p>
+                            <p>
+                                たとえば、時間の経過（2009年からの日数）と価格の関係が直線的に見えることで、長期的な成長パターンが明確になります。以下は対数-対数スケールでの表示例です。
+                            </p>
+                            {loading ? (
+                                <p>読み込み中...</p>
+                            ) : error ? (
+                                <p>データの取得に失敗しました。</p>
+                            ) : (
+                                <PowerLawChartWrapper
+                                    chartData={powerLawData}
+                                    exchangeRate={exchangeRate}
+                                    rSquared={rSquared}
+                                    height={300}
+                                    isLogScale={true} // X軸: 対数, Y軸: 対数
+                                    xAxisScale="log"
+                                    yAxisScale="log"
+                                />
+                            )}
+                        </div>
                         <p>
-                            <span className="font-medium text-blue-300">対数-対数スケールって何？</span> 簡単に言うと、価格と時間の両方を「対数」という特別なスケールで表す方法です。普通のグラフだと価格が急上昇しすぎて見づらいですが、対数スケールを使うと、長い期間の成長が「直線」に見えるんです。まるで、遠くの山を双眼鏡で見るようなイメージです。
+                            これらのチャートでは、「中央価格」（長期的な予測値）と「下限価格」（過去の底値ライン）が示されます。対数スケールは価格の変化を捉えやすく、対数-対数スケールはパワーローの理論的な裏付けを強調します。
                         </p>
-                        <p>
-                            このチャートでは、3つのラインが重要です：
-                        </p>
-                        <ul className="list-disc list-inside space-y-2 pl-4">
-                            <li>
-                                <span className="font-medium text-green-400">中央価格（緑の線）</span>：ビットコイン価格が長期的に安定する目安。
-                            </li>
-                            <li>
-                                <span className="font-medium text-red-400">下限価格（赤の線）</span>：過去にほとんど下回らなかった「底値」のライン。買い時とされることが多いです。
-                            </li>
-                            <li>
-                                <span className="font-medium text-blue-400">上限価格（青の線）</span>：バブル期に到達する「天井」のライン。
-                            </li>
-                        </ul>
-                        {chartComponent}
-                    </div>
-                    <div className="mt-4 text-right">
-                        <Link
-                            to="/analysis-news"
-                            className="text-[#3B82F6] hover:text-[#2b6cb0] text-sm font-medium inline-flex items-center group"
-                        >
-                            最新の価格分析を見る{' '}
-                            <span className="ml-1 transition-transform duration-200 group-hover:translate-x-1">
-                                →
-                            </span>
-                        </Link>
+                        <div>
+                            <h3 className={`${typography.subtitle} ${colors.textPrimary} mb-2`}>
+                                決定係数（R²）とは？
+                            </h3>
+                            <p>
+                                チャート右上に表示される「R²」は決定係数と呼ばれ、パワーローモデルが過去の価格データをどれだけ正確に説明できるかを示す数値です。0から1の範囲で表され、1に近いほどモデルが実際のデータに良く当てはまっていることを意味します。
+                            </p>
+                            <p>
+                                たとえば、R²が0.93なら、過去の価格変動の約93%がこのモデルで説明できるということ。高い値は、長期的な予測の信頼性が高いことを示唆しますが、未来を完全に予測するものではない点に注意が必要です。
+                            </p>
+                        </div>
                     </div>
                 </section>
 
                 <section id="investment-application" className={`${colors.cardBg} rounded-xl p-6 mb-8 shadow-lg`}>
                     <h2 className={`${typography.h2} text-[#3B82F6] mb-4 flex items-center`}>
                         <TrendingUp className="h-5 w-5 mr-2" />
-                        パワーローを投資に活かす：賢い投資のヒント
+                        投資への活用
                     </h2>
                     <div className={`${typography.body} ${colors.textSecondary} space-y-4`}>
                         <p>
-                            パワーローを知ると、ビットコイン投資の戦略に役立つヒントが得られます。Harold Christopher Burger（ハロルド・クリストファー・バーガー）さんは、パワーローを使って「成長の回廊」を作る方法を提案しています。
-                        </p>
-                        <p>
-                            さっきのチャートで見た「中央価格」「下限価格」「上限価格」を使えば、こんな戦略が考えられます：
+                            パワーローチャートを活用すれば、ビットコイン投資のタイミングを見極める手助けになります。Harold Christopher Burgerは、価格の「成長回廊」を提案しています。
                         </p>
                         <ul className="list-disc list-inside space-y-2 pl-4">
                             <li>
-                                <span className="font-medium text-green-400">価格が下限価格に近づいたら買い時</span>：過去のデータでは、下限価格を下回ることがほとんどないので、ここで買うとリスクが低い可能性があります。
+                                <span className="font-medium text-teal-300">下限価格での購入:</span> 過去データで底値とされるラインに近づいた時、リスクが低い可能性があります。
                             </li>
                             <li>
-                                <span className="font-medium text-blue-400">上限価格に近づいたら注意</span>：バブル期のピークでは価格が急落することが多いので、売り時や様子見のタイミングかもしれません。
-                            </li>
-                            <li>
-                                <span className="font-medium text-green-400">中央価格を目安に長期投資</span>：短期的な上下に惑わされず、中央価格を目安にコツコツ積み立てるのがおすすめです。
+                                <span className="font-medium text-teal-300">中央価格での積み立て:</span> 短期変動に左右されず、長期的な成長を見据えた投資に適しています。
                             </li>
                         </ul>
                         <p>
-                            たとえば、NISAでS&P500を積み立てているあなたなら、ビットコインも「長期的な成長」を信じて、少しずつ買っていく戦略が合うかもしれません。パワーローは、そのタイミングを見極める羅針盤になってくれます。
-                        </p>
-                        <p className="italic text-gray-400">
-                            ポイント：パワーローは「いつ買うか」「いつ売るか」の目安になります。短期的な値動きに振り回されず、長期的な視点で投資を考えましょう。
+                            NISAなどを活用している方なら、ビットコインも長期視点で少額から積み立てる戦略が合うかもしれません。
                         </p>
                     </div>
                     <div className="mt-4 text-right">
@@ -192,10 +183,8 @@ const PowerLawExplanation: React.FC<PowerLawExplanationProps> = ({ chartComponen
                             to="/simulators/investment"
                             className="text-[#3B82F6] hover:text-[#2b6cb0] text-sm font-medium inline-flex items-center group"
                         >
-                            シミュレーションで投資戦略を試す{' '}
-                            <span className="ml-1 transition-transform duration-200 group-hover:translate-x-1">
-                                →
-                            </span>
+                            シミュレーションを試す{' '}
+                            <span className="ml-1 transition-transform duration-200 group-hover:translate-x-1">→</span>
                         </Link>
                     </div>
                 </section>
@@ -203,94 +192,24 @@ const PowerLawExplanation: React.FC<PowerLawExplanationProps> = ({ chartComponen
                 <section id="limitations" className={`${colors.cardBg} rounded-xl p-6 mb-8 shadow-lg`}>
                     <h2 className={`${typography.h2} text-[#3B82F6] mb-4 flex items-center`}>
                         <AlertTriangle className="h-5 w-5 mr-2" />
-                        パワーローの限界と注意点：知っておきたいこと
+                        パワーローの限界
                     </h2>
                     <div className={`${typography.body} ${colors.textSecondary} space-y-4`}>
                         <p>
-                            パワーローは便利なツールですが、完璧ではありません。以下の点に気をつけてください：
+                            パワーローは長期予測に適していますが、短期的な価格変動には対応できません。また、法律や技術の大きな変化があれば予測が外れる可能性もあります。
                         </p>
-                        <ul className="list-disc list-inside space-y-2 pl-4">
-                            <li>
-                                <span className="font-medium text-yellow-300">長期的な予測に使うもの</span>：パワーローは、来週や来月の価格を予測するのには向いていません。1年後、5年後といった長いスパンで見るためのツールです。
-                            </li>
-                            <li>
-                                <span className="font-medium text-yellow-300">過去のデータに基づいている</span>：未来のことは誰にもわかりません。たとえば、新しい法律や技術の変化が起こると、パワーローの予測が外れることもあります。
-                            </li>
-                            <li>
-                                <span className="font-medium text-yellow-300">成長が永遠に続くわけではない</span>：木が空に向かって無限に伸びないように、ビットコインの成長もいつか落ち着く可能性があります。
-                            </li>
-                            <li>
-                                <span className="font-medium text-yellow-300">モデルは進化する</span>：新しいデータが入ると、パワーローモデル自体が更新されることもあります。
-                            </li>
-                        </ul>
                         <p>
-                            パワーローだけに頼るのではなく、ニュースや他の分析ツールと組み合わせて、バランスよく判断することが大切です。
+                            成長が無限に続くわけではなく、いつか落ち着く可能性も考慮が必要です。ニュースや他の分析と組み合わせることが重要です。
                         </p>
-                        <p className="italic text-gray-400">
-                            ポイント：パワーローは「未来を予測する魔法の杖」ではありません。長期的な目安として使い、他の情報と一緒に考えるのが賢い使い方です。
-                        </p>
-                    </div>
-                </section>
-
-                <section id="references" className="mt-12 pt-8 border-t border-gray-700">
-                    <h2 className={`${typography.h2} text-[#3B82F6] mb-4`}>もっと学びたい人のための参考文献</h2>
-                    <div className={`${colors.cardBg} rounded-xl p-6 shadow-lg ${colors.textSecondary} space-y-4`}>
-                        <ul className="space-y-4">
-                            <li>
-                                <a
-                                    href="https://giovannisantostasi.medium.com/the-bitcoin-power-law-theory-962dfaf99ee9"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-[#3B82F6] hover:text-[#2b6cb0] transition-colors font-medium"
-                                >
-                                    "The Bitcoin Power Law Theory" - Giovanni Santostasi (2024)
-                                </a>
-                                <p className={`${typography.small} ${colors.textMuted} mt-1 pl-4`}>
-                                    パワーローがビットコインにどう当てはまるか、物理学の視点から詳しく解説しています。
-                                </p>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://hcburger.com/blog/powerlaw/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-[#3B82F6] hover:text-[#2b6cb0] transition-colors font-medium"
-                                >
-                                    "Bitcoin's Natural Long-Term Power-Law Corridor of Growth" - HC Burger (2019)
-                                </a>
-                                <p className={`${typography.small} ${colors.textMuted} mt-1 pl-4`}>
-                                    パワーローを使って、ビットコイン投資のタイミングを見極める方法を提案しています。
-                                </p>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://www.investopedia.com/metcalfe-s-law-5202864"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-[#3B82F6] hover:text-[#2b6cb0] transition-colors font-medium"
-                                >
-                                    "Metcalfe's Law" - Investopedia
-                                </a>
-                                <p className={`${typography.small} ${colors.textMuted} mt-1 pl-4`}>
-                                    ネットワーク効果がビットコインの価値にどう影響するか、初心者向けに解説しています。
-                                </p>
-                            </li>
-                        </ul>
                     </div>
                 </section>
 
                 <footer className="text-center text-gray-400 mt-12 py-4 border-t border-gray-800">
                     <p>
-                        © {new Date().getFullYear()} ビットコイン長期投資研究所{' '}
-                        <a
-                            href="https://x.com/DrPowerLaw"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#3B82F6] hover:text-[#2b6cb0] transition-colors"
-                        >
+                        © {new Date().getFullYear()} ビットコイン長期投資ラボ{' '}
+                        <a href="https://x.com/DrPowerLaw" target="_blank" rel="noopener noreferrer" className="text-[#3B82F6] hover:text-[#2b6cb0]">
                             @DrPowerLaw
                         </a>
-                        . All rights reserved.
                     </p>
                 </footer>
             </div>

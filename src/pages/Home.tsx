@@ -208,7 +208,7 @@ const Home: React.FC = () => {
 
         {/* メイン：タブ付きパワーローチャート */}
         <div className="mt-12">
-          <h1 className={`${typography.h1} text-center text-[#D4AF37] mb-6`}>長期パワーローチャート</h1>
+          <h1 className={`${typography.h1} text-center text-[#D4AF37] mb-6`}>パワーローチャート</h1>
           <div className="flex justify-center mb-6 space-x-4">
             <button
               onClick={() => setActiveTab('log')}
@@ -236,7 +236,7 @@ const Home: React.FC = () => {
                 rSquared={rSquared}
                 chartData={chartDataToUse}
                 exchangeRate={exchangeRate || 1}
-                currentPrice={currentPrice?.prices.usd}
+
                 height={500}
                 isLogScale={activeTab === 'log'}
               />
